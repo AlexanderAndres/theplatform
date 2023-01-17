@@ -1,0 +1,117 @@
+:root {
+  --primary-bg: #242526;
+  --secondary-bg: #fff;
+  --primary-text-color: #555;
+  --secondary-text-color: #cecece;
+  --border-radius: 8px;
+  --speed: 500ms;
+  --title: 20px;
+  --text: 15px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: monospace;
+}
+
+.map-container {
+  height: 100vh;
+  width: 100vw;
+}
+
+.menu-trigger {
+  cursor: pointer;
+}
+
+.menu-container {
+  right: 0;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 25vw;
+  height: 35px;
+  /*background-color: bisque;*/
+}
+
+.left-menu {
+  background-color: rgba(44, 44, 44);
+  color: rgb(242, 242, 242);
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--title);
+}
+
+.dropdown-menu {
+  background-color: rgba(44, 44, 44);
+  color: rgb(242, 242, 242);
+  width: 100%;
+  transition: var(--speed);
+  
+}
+
+.dropdown-menu li {
+  list-style-type: none;
+  cursor: pointer;
+  width: 300px;
+  height: 35px;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  transition: var(--speed);
+}
+
+.dropdown-menu a {
+  text-decoration: none;
+  color: rgb(242, 242, 242);
+  transition: var(--speed);
+}
+
+.dropdown-menu .active {
+  opacity: 1;
+  visibility: visible;
+  transform: translatex(0);
+  transition: var(--speed) ease;
+  height: 100%;
+}
+
+.dropdown-menu.inactive{
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(20px);
+  transition: var(--speed) ease;
+}
+
+
+.blob {
+	-webkit-filter: drop-shadow( 0px 0px 15px rgba(255, 0, 0, 1));
+  filter: drop-shadow( 0px 0px 15px rgba(255, 0, 0, 1));
+	animation: pulse 1s infinite;
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+}
+
+
+@keyframes pulse {
+	0% {
+		-webkit-filter: drop-shadow( 0px 0px 15px rgba(0255, 0, 0, 1));
+  filter: drop-shadow( 0px 0px 15px rgba(255, 0, 0, 1));
+	}
+
+	500% {
+		-webkit-filter: drop-shadow( 0px 0px 15px rgba(255, 0, 0, 0));
+  filter: drop-shadow( 0px 0px 15px rgba(255, 0, 0, 0));
+	}
+
+	100% {
+		-webkit-filter: drop-shadow( 0px 0px 15px rgba(255, 0, 0, 0));
+  filter: drop-shadow( 0px 0px 15px rgba(255, 0, 0, 0));
+	}
+}
+
+.logo {
+  position: absolute;
+  margin: 15px;
+}
