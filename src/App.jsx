@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useRef, useState, useCallback, useMemo, useEffect } from 'react';
 import Map, {
   Marker, Popup,
   NavigationControl
@@ -6,6 +6,8 @@ import Map, {
 import UnimarcPointer from '../public/UnimarcPoint';
 import LeftMenu from './components/LeftMenu';
 import LogoSmu from '../public/SmuLogo';
+import useFetch from './hooks/useFetch';
+import axios from 'axios';
 
 const accessToken = 'pk.eyJ1IjoiYmFsYW54Y2UiLCJhIjoiY2xjbTZucGZ5M2tlYTNvcDR6amhwbTh1eCJ9.wFC-K6LRK1r__17CIt_ypw';
 
@@ -26,6 +28,23 @@ function App() {
   const copyLocales = locales;
 
   const [popupInfo, setPopupInfo] = useState(null);
+  //() => handdleAlert(point.ceco)
+
+  const pins = useMemo(
+    () => locales.map(point => (
+      <Marker
+        onClick={e => {
+          // If we let the click event propagates to the map, it will immediately close the popup
+          // with `closeOnClick: true`
+          e.originalEvent.stopPropagation();
+          setPopupInfo(point);
+        }}
+        longitude={point.longitude} latitude={point.latitude} key={`marker-${point.ceco}`} anchor="bottom" >
+        <UnimarcPointer className={(point.alert == true) ? 'blob' : ''} />
+      </Marker>
+    )),
+    []
+  );
 
   const onMapLoad = useCallback(() => {
     console.log('Map Loaded');
@@ -51,26 +70,19 @@ function App() {
     setLocales(localesStateReview);
   };
 
-  const pins = useMemo(
-    () =>
-      CITIES.map((city, index) => (
-        <Marker
-          key={`marker-${index}`}
-          longitude={city.longitude}
-          latitude={city.latitude}
-          anchor="bottom"
-          onClick={e => {
-            // If we let the click event propagates to the map, it will immediately close the popup
-            // with `closeOnClick: true`
-            e.originalEvent.stopPropagation();
-            setPopupInfo(city);
-          }}
-        >
-          <Pin />
-        </Marker>
-      )),
-    []
-  );
+  const fetchData = () => {
+    return axios.get("https://smu-api.herokuapp.com/api/local", {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json',
+      }
+    })
+      .then((response) => setUser(response.data));
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, [])
 
   return <div className="map-container">
     <Map
@@ -82,63 +94,64 @@ function App() {
         zoom: zoom,
       }}
       mapStyle="mapbox://styles/balanxce/clct3r28c000314n7kkbug9o9"
-    //onClick={() => handdleAlert(point.ceco)}
     >
       <LogoSmu className='logo' />
-      {
-        locales.map(point => {
-          return (
-            <Marker
-              onClick={e => {
-                // If we let the click event propagates to the map, it will immediately close the popup
-                // with `closeOnClick: true`
-                e.originalEvent.stopPropagation();
-                setPopupInfo(city);
-              }}
-              longitude={point.longitude} latitude={point.latitude} key={`marker-${point.ceco}`} anchor="bottom" >
-              <UnimarcPointer className={(point.alert == true) ? 'blob' : ''} />
-            </Marker>
-          );
-        })
-      }
+      {pins}
+      {popupInfo && (
+        <Popup
+          anchor="top"
+          longitude={Number(popupInfo.longitude)}
+          latitude={Number(popupInfo.latitude)}
+          onClose={() => setPopupInfo(null)}
+        >
+          <div>
+            {popupInfo.ceco} | {popupInfo.alert ? 'true' : 'false'}
+          </div>
+        </Popup>
+      )}
       <LeftMenu />
     </Map >
   </div>;
 }
 
 export default App;
-
 /*
-return <div className="map-container">
-    <Map
-      ref={mapRef} onLoad={onMapLoad}
-      mapboxAccessToken={accessToken}
-      initialViewState={{
-        longitude: lng,
-        latitude: lat,
-        zoom: zoom,
-      }}
-      mapStyle="mapbox://styles/balanxce/clct3r28c000314n7kkbug9o9"
-      //onClick={() => handdleAlert(point.ceco)}
-    >
-      <LogoSmu className='logo' />
-      {
+{
+  locales.map(point => {
+    return (
+      <Marker onClick={() => handdleAlert(point.ceco)}
+        longitude={point.longitude} latitude={point.latitude} key={`marker-${point.ceco}`} anchor="bottom" >
+        <UnimarcPointer className={(point.alert == true) ? 'blob' : ''} />
+      </Marker>
+    );
+  })
+}
+*/
+/*
+{
         locales.map(point => {
+          console.log('Points:', point)
           return (
-            <Marker
-              onClick={e => {
-                // If we let the click event propagates to the map, it will immediately close the popup
-                // with `closeOnClick: true`
-                e.originalEvent.stopPropagation();
-                setPopupInfo(city);
-              }}
-              longitude={point.longitude} latitude={point.latitude} key={`marker-${point.ceco}`} anchor="bottom" >
-              <UnimarcPointer className={(point.alert == true) ? 'blob' : ''} />
+            <Marker onClick={() => handdleAlert(point.ceco)} longitude={point.longitude} latitude={point.latitude} key={point.ceco} anchor="bottom" >
+              <UnimarcPointer className={alert == true ? 'blob' : ''} />
             </Marker>
           );
         })
       }
-      <LeftMenu />
-    </Map >
-  </div>;
+
+<Marker longitude={-71.55431230066509} latitude={-33.01559509684574} anchor="bottom" >
+        <UnimarcPointer className='blob' />
+      </Marker>
+
+      <Marker longitude={-71.55706310004389} latitude={-33.028719662189296} anchor="bottom" >
+        <UnimarcPointer className='' />
+      </Marker>
+
+      <Marker longitude={-71.54954404114832} latitude={-33.02263808668426} anchor="bottom" >
+        <UnimarcPointer className='blob' />
+      </Marker>
+
+      <Marker longitude={-71.52958000004391} latitude={-32.98032506248038} anchor="bottom" >
+        <UnimarcPointer className='' />
+      </Marker>
 */
