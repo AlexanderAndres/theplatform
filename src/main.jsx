@@ -9,6 +9,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import LeftMenu from './components/LeftMenu';
+import ComponentBilder from './components/Builder/ComponentBuilder';
 
 const router = createBrowserRouter([
   {
@@ -16,8 +17,8 @@ const router = createBrowserRouter([
     element: <App />,
   },
   {
-    path: '/menu',
-    element: <LeftMenu/>
+    path: '/builder',
+    element: <ComponentBilder/>
   }
 ]);
 

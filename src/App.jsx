@@ -1,13 +1,11 @@
 import React, { useRef, useState, useCallback, useMemo, useEffect } from 'react';
 import Map, {
-  Marker, Popup,
-  NavigationControl
+  Marker, Popup
 } from 'react-map-gl';
 import UnimarcPointer from '../public/UnimarcPoint';
 import LeftMenu from './components/LeftMenu';
 import LogoSmu from '../public/SmuLogo';
-import useFetch from './hooks/useFetch';
-import axios from 'axios';
+import UserMarkers from './components/UserMarkers';
 
 const accessToken = 'pk.eyJ1IjoiYmFsYW54Y2UiLCJhIjoiY2xjbTZucGZ5M2tlYTNvcDR6amhwbTh1eCJ9.wFC-K6LRK1r__17CIt_ypw';
 
@@ -20,7 +18,6 @@ const points = [
 
 function App() {
   const mapRef = useRef();
-
   const [lng, setLng] = useState(-71.5433);
   const [lat, setLat] = useState(-33.0029);
   const [zoom, setZoom] = useState(13);
@@ -70,20 +67,6 @@ function App() {
     setLocales(localesStateReview);
   };
 
-  const fetchData = () => {
-    return axios.get("https://smu-api.herokuapp.com/api/local", {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Content-Type': 'application/json',
-      }
-    })
-      .then((response) => setUser(response.data));
-  }
-
-  useEffect(() => {
-    fetchData();
-  }, [])
-
   return <div className="map-container">
     <Map
       ref={mapRef} onLoad={onMapLoad}
@@ -96,7 +79,7 @@ function App() {
       mapStyle="mapbox://styles/balanxce/clct3r28c000314n7kkbug9o9"
     >
       <LogoSmu className='logo' />
-      {pins}
+      <UserMarkers/>
       {popupInfo && (
         <Popup
           anchor="top"
@@ -110,6 +93,7 @@ function App() {
         </Popup>
       )}
       <LeftMenu />
+      <UserMarkers/>
     </Map >
   </div>;
 }
@@ -138,19 +122,15 @@ export default App;
           );
         })
       }
-
 <Marker longitude={-71.55431230066509} latitude={-33.01559509684574} anchor="bottom" >
         <UnimarcPointer className='blob' />
       </Marker>
-
       <Marker longitude={-71.55706310004389} latitude={-33.028719662189296} anchor="bottom" >
         <UnimarcPointer className='' />
       </Marker>
-
       <Marker longitude={-71.54954404114832} latitude={-33.02263808668426} anchor="bottom" >
         <UnimarcPointer className='blob' />
       </Marker>
-
       <Marker longitude={-71.52958000004391} latitude={-32.98032506248038} anchor="bottom" >
         <UnimarcPointer className='' />
       </Marker>
